@@ -1,0 +1,17 @@
+package com.nationpowergrid.mobileoperation.utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
+
+public class HttpExecutor {
+	private static HttpExecutor executor;
+	private Context mContext;
+	private String tag=HttpExecutor.class.getSimpleName().toString();
+	public void test(){
+		
+		
+	}
+
+}

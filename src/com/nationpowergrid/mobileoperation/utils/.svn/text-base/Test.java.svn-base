@@ -1,0 +1,22 @@
+package com.nationpowergrid.mobileoperation.utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class Test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		JSONObject ob=new JSONObject();
+		try {
+			ob.put("db","sdd");
+			ob.put("sd", "23232");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ob.toString();
+
+	}
+
+}

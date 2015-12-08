@@ -1,0 +1,405 @@
+package com.nationpowergrid.mobileoperation.utils;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import com.nationpowergrid.mobileoperation.R;
+import com.nationpowergrid.mobileoperation.interfaces.CheckNullable;
+import com.nationpowergrid.mobileoperation.interfaces.DataNullable;
+
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnFocusChangeListener;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+//简单的文本框验证Utils类
+public class CheckUtils {
+	public static CheckUtils checkUtils;
+	public Map<View, List<ValidateMsg>> inValidateMsgMap = new HashMap<View, List<ValidateMsg>>();
+	public Map<Object, List<ValidateMsg>> inValidateObjMap = new HashMap<Object, List<ValidateMsg>>();
+	public OnValidateListener listener;
+	private boolean hasObjNull = false;
+
+	// 失去焦点监听器
+	private class OnFocusChangeListenerImpl implements OnFocusChangeListener {
+		private CheckNullable annoation;
+
+		public OnFocusChangeListenerImpl(CheckNullable annoation) {
+			this.annoation = annoation;
+		}
+
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			// TODO Auto-generated method stub
+			EditText edt = (EditText) v;
+			String tip = annoation.tipValue();
+			if (!hasFocus) {
+				if (edt.getText().toString() != null) {
+					if (TextUtils.isEmpty(edt.getText().toString())) {
+						ValidateMsg msg = new ValidateMsg();
+						msg.setNullMsg(tip);
+						Toast.makeText(edt.getContext(), msg.getNullMsg(),
+								Toast.LENGTH_SHORT).show();
+						showErrorBoder(edt);
+						addValidateMsg(edt, msg);
+					} else {
+						validateFormat(edt, annoation);
+					}
+				}
+			}
+		}
+
+	};
+
+	public void showErrorBoder(View view) {
+		Drawable oldDrawable = view.getBackground();
+		if (oldDrawable != null) {
+			Drawable errorBorder = view.getContext().getResources()
+					.getDrawable(R.drawable.errorborder);
+			view.setBackgroundResource(R.drawable.errorborder);
+		}
+	}
+
+	public boolean hasObjNull() {
+		return this.hasObjNull;
+	}
+
+	public void showNormalBorder(View view) {
+		Drawable oldDrawable = view.getBackground();
+		if (oldDrawable != null) {
+			Drawable errorBorder = view.getContext().getResources()
+					.getDrawable(R.drawable.errorborder);
+			view.setBackgroundResource(R.drawable.editborder);
+		}
+	}
+
+	private CheckUtils() {
+
+	}
+
+	public View getFirstView() {
+		int size = inValidateMsgMap.size();
+		View view = null;
+		Set<View> views = inValidateMsgMap.keySet();
+		Iterator<View> it = views.iterator();
+		while (it.hasNext()) {
+			view = it.next();
+			break;
+		}
+		return view;
+
+	}
+
+	public Object getFirstObject() {
+		int size = inValidateObjMap.size();
+		Object obj = null;
+		Set<Object> views = inValidateObjMap.keySet();
+		Iterator<Object> it = views.iterator();
+		while (it.hasNext()) {
+			obj = it.next();
+			break;
+		}
+		return obj;
+	}
+
+	public interface OnValidateListener {
+		void OnSuccess();
+
+		void OnFailer(Object v, List<ValidateMsg> msgs);
+	}
+
+	public static CheckUtils Instance() {
+		if (checkUtils == null) {
+			checkUtils = new CheckUtils();
+		}
+		return checkUtils;
+	}
+
+	// 注册验证完成监听器
+	public void setOnValidateListener(OnValidateListener l) {
+		listener = l;
+	}
+
+	public void triggerValidateListener() {
+		if (listener != null) {
+			if (inValidateObjMap.isEmpty()) {
+				listener.OnSuccess();
+			} else {
+				Object v = this.getFirstObject();
+				List<ValidateMsg> msgs = inValidateObjMap.get(v);
+				if (msgs != null && msgs.size() > 0) {
+					listener.OnFailer(v, msgs);
+				}
+			}
+		}
+
+	}
+
+	public void addValidateMsg(View view, ValidateMsg msg) {
+		if (!inValidateMsgMap.containsKey(view)) {
+			List<ValidateMsg> list = new ArrayList<ValidateMsg>();
+			list.add(msg);
+			inValidateMsgMap.put(view, list);
+		} else {
+			List<ValidateMsg> list = inValidateMsgMap.get(view);
+			if (list == null) {
+				list = new ArrayList<ValidateMsg>();
+				list.add(msg);
+			} else {
+				list.add(msg);
+			}
+		}
+	}
+
+	public void addValidateMsg(Object obj, ValidateMsg msg) {
+		if (!inValidateObjMap.containsKey(obj)) {
+			List<ValidateMsg> list = new ArrayList<ValidateMsg>();
+			list.add(msg);
+			inValidateObjMap.put(obj, list);
+		} else {
+			List<ValidateMsg> list = inValidateObjMap.get(obj);
+			if (list == null) {
+				list = new ArrayList<ValidateMsg>();
+				list.add(msg);
+			} else {
+				list.add(msg);
+			}
+		}
+	}
+
+	// 验证格式
+	public void validateFormat(EditText view, CheckNullable anno) {
+		CheckNullable.Type type = anno.fieldType();
+		String text = view.getText().toString();
+		if (type == CheckNullable.Type.Number) {
+			if (!isNumber(text)) {
+				ValidateMsg msg = new ValidateMsg();
+				msg.setErrorTypeMsg("请输入正确的数字格式");
+				showErrorBoder(view);
+				Toast.makeText(view.getContext(), msg.getErrorTypeMsg(),
+						Toast.LENGTH_SHORT).show();
+				addValidateMsg(view, msg);
+			} else {
+				showNormalBorder(view);
+			}
+
+		} else if (type == CheckNullable.Type.Tel) {
+			if (!isMobileNO(text)) {
+				ValidateMsg msg = new ValidateMsg();
+				msg.setErrorTypeMsg("请输入正确的电话格式");
+				showErrorBoder(view);
+				Toast.makeText(view.getContext(), msg.getErrorTypeMsg(),
+						Toast.LENGTH_SHORT).show();
+				addValidateMsg(view, msg);
+			} else {
+				showNormalBorder(view);
+			}
+		}
+	}
+
+	// 验证是否是手机号
+	public boolean isMobileNO(String mobiles) {
+		/*
+		 * 移动：134、135、136、137、138、139、150、151、157(TD)、158、159、187、188
+		 * 联通：130、131、132、152、155、156、185、186 电信：133、153、180、189、（1349卫通）
+		 * 总结起来就是第一位必定为1，第二位必定为3或5或8，其他位置的可以为0-9
+		 */
+		String telRegex = "[1][358]\\d{9}";// "[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
+		if (TextUtils.isEmpty(mobiles))
+			return false;
+		else
+			return mobiles.matches(telRegex);
+	}
+
+	// 验证是否是数字
+	public boolean isNumber(String numberString) {
+		Pattern pattern = Pattern.compile("[0-9]*");
+		return pattern.matcher(numberString).matches();
+	}
+
+	// 页面注入
+	public void check(Fragment context) {
+
+		Class contextClass = context.getClass();
+		Field[] fields = contextClass.getDeclaredFields();
+		for (int i = 0; i < fields.length; i++) {
+			checkField(fields[i], context);
+		}
+		// triggerValidateListener();
+	}
+
+	// 对象注入
+	public void checkObjectNotNull(Object entity) {
+		//initMsgMap();
+		Class entityClass = entity.getClass();
+		Field[] fields = entityClass.getDeclaredFields();
+		for (int i = 0; i < fields.length; i++) {
+			checkData(fields[i], entity);
+		}
+		
+	}
+	//触发监听器
+	public void submit(){
+		triggerValidateListener();
+	}
+   public void initMsgMap(){
+	   if(inValidateObjMap.size()>0){
+		   inValidateObjMap.clear();
+	   }
+   }
+	// 检查类的属性是否为空
+	public boolean checkData(Field field, Object entity) {
+		Context context = null;
+		if (field.isAnnotationPresent(DataNullable.class)) {
+			DataNullable anno = field.getAnnotation(DataNullable.class);
+			Object value = getFieldValue(entity, field);
+			String nullInfo = anno.tipNull();
+			if (value == null || value.equals("")) {
+				// hasObjNull = true;
+				ValidateMsg msg = new ValidateMsg();
+				msg.setNullMsg(nullInfo);
+				addValidateMsg(entity, msg);
+				return false;
+			} else {
+				String objValue = (String) value;
+				validateObjectValue(entity, objValue, anno);
+			}
+		}
+		return true;
+	}
+
+	public void validateObjectValue(Object entity, String value,
+			DataNullable anno) {
+		DataNullable.Type type = anno.dataType();
+		String typeInfo = anno.typeInfo();
+		if (type == DataNullable.Type.Number) {
+			if (!isNumber(value)) {
+				ValidateMsg msg = new ValidateMsg();
+				msg.setErrorTypeMsg(typeInfo);
+				addValidateMsg(entity, msg);
+			}
+		} else if (type == DataNullable.Type.Tel) {
+			if (!isMobileNO(value)) {
+				ValidateMsg msg = new ValidateMsg();
+				msg.setErrorTypeMsg(typeInfo);
+				addValidateMsg(entity, msg);
+			}
+		}
+	}
+    public void finilize(){
+    	this.initMsgMap();
+    }
+	// 获得class 属性的值
+	public Object getFieldValue(Object entity, Field field) {
+		Object fieldValue = null;
+		Class entityClass = entity.getClass();
+		Method getMethod = getColumnGetMethod(entityClass, field);
+		if (entity != null) {
+			if (getMethod != null) {
+				try {
+					fieldValue = getMethod.invoke(entity);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return fieldValue;
+	}
+
+	// 获得类属性的get方法
+	public static Method getColumnGetMethod(Class<?> entityType, Field field) {
+		String fieldName = field.getName();
+		Method getMethod = null;
+		if (field.getType() == boolean.class) {
+			getMethod = getBooleanColumnGetMethod(entityType, fieldName);
+		}
+		if (getMethod == null) {
+			String methodName = "get" + fieldName.substring(0, 1).toUpperCase()
+					+ fieldName.substring(1);
+			try {
+				getMethod = entityType.getDeclaredMethod(methodName);
+			} catch (NoSuchMethodException e) {
+				Log.v("jk", methodName + " not exist");
+			}
+		}
+
+		if (getMethod == null
+				&& !Object.class.equals(entityType.getSuperclass())) {
+			return getColumnGetMethod(entityType.getSuperclass(), field);
+		}
+		return getMethod;
+	}
+
+	// 如果属性是bool类型，获取is...方法
+	private static Method getBooleanColumnGetMethod(Class<?> entityType,
+			final String fieldName) {
+		String methodName = "is" + fieldName.substring(0, 1).toUpperCase()
+				+ fieldName.substring(1);
+		if (isStartWithIs(fieldName)) {
+			methodName = fieldName;
+		}
+		try {
+			return entityType.getDeclaredMethod(methodName);
+		} catch (NoSuchMethodException e) {
+			Log.v("jk", methodName + " not exist");
+		}
+		return null;
+	}
+
+	private static boolean isStartWithIs(final String fieldName) {
+		return fieldName != null && fieldName.startsWith("is");
+	}
+
+	// 检查每个属性是否需要检查
+	public void checkField(Field field, Fragment entity) {
+		Context context = null;
+		String tip = "";
+		if (field.isAnnotationPresent(CheckNullable.class)) {
+			CheckNullable anno = field.getAnnotation(CheckNullable.class);
+			tip = anno.tipValue();
+
+			if (View.class.isAssignableFrom(field.getType())) {
+				if (!field.isAccessible()) {
+					field.setAccessible(true);
+				}
+				try {
+					View ele = (View) field.get(entity);
+					context = ele.getContext();
+					if (ele instanceof EditText) {
+						EditText edt = (EditText) ele;
+						edt.setOnFocusChangeListener(new OnFocusChangeListenerImpl(
+								anno));
+
+					}
+
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+}

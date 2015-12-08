@@ -1,0 +1,176 @@
+package com.nationpowergrid.mobileoperation.utils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONObject;
+
+import android.content.Context;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.nationpowergrid.mobileoperation.interfaces.UICallBack;
+
+public class PGExecutor {
+	private static PGExecutor executor;
+	private Context mContext;
+	private RequestQueue volleyQueue;
+	private String tag = PGExecutor.class.getSimpleName().toString();
+
+	public PGExecutor(Context context) {
+		mContext = context;
+		volleyQueue = VolleyUtils.newRequestQueue(context);
+	}
+
+	public static PGExecutor newInstance(Context cxt) {
+		if (executor == null) {
+			executor = new PGExecutor(cxt);
+		}
+		return executor;
+	}
+
+	public void cancelRequest(Object tag) {
+		volleyQueue.cancelAll(tag);
+	}
+
+	/**
+	 * 加tokenId消息头
+	 * 
+	 * @param method
+	 * @param url
+	 * @param paramMap
+	 * @param mCallBack
+	 * @param tokenId
+	 */
+	public void performSyncRequest(int method, String url,
+			final Map<String, String> paramMap, final UICallBack mCallBack,
+			final String tokenId) {
+		
+		StringRequest request = new StringRequest(method, url,
+				new Response.Listener<String>() {
+					@Override
+					public void onResponse(String response) {
+						// TODO Auto-generated method stub
+						mCallBack.onSuccess(response);
+					}
+				}, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						// TODO Auto-generated method stub
+						mCallBack.onFailure(error);
+					}
+				}) {
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				// TODO Auto-generated method stub
+				return paramMap;
+			}
+
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+
+				// 将验证令牌tokenId放在消息头
+				HashMap<String, String> headers = new HashMap<String, String>();
+				headers.put("x-auth", Utils.base64Encryption(tokenId));
+
+				return headers;
+			}
+		};
+
+		request.setTag(mContext);
+
+		volleyQueue.add(request);
+
+	}
+
+	/**
+	 * 加tokenId消息头
+	 * 
+	 * @param method
+	 * @param url
+	 * @param paramMap
+	 * @param mCallBack
+	 * @param tokenId
+	 */
+	public void performObjectSyncRequest(String url, JSONObject paramMap,
+			final UICallBack mCallBack, final String tokenId) {
+
+		MyStringRequest request = new MyStringRequest(url, paramMap,
+				new Listener<String>() {
+
+					@Override
+					public void onResponse(String response) {
+
+						mCallBack.onSuccess(response);
+
+					}
+
+				}, new ErrorListener() {
+
+					@Override
+					public void onErrorResponse(VolleyError error) {
+
+						mCallBack.onFailure(error);
+
+					}
+				}) {
+
+			@Override
+			public Map<String, String> getHeaders() {
+				// 将验证令牌tokenId放在消息头
+				HashMap<String, String> headers = new HashMap<String, String>();
+				headers.put("x-auth", Utils.base64Encryption(tokenId));
+
+				return headers;
+			}
+
+		};
+
+		request.setTag(mContext);
+
+		volleyQueue.add(request);
+
+	}
+
+	/**
+	 * 不用加tokenId消息头的请求方法
+	 * 
+	 * @param method
+	 * @param url
+	 * @param paramMap
+	 * @param mCallBack
+	 */
+	public void performSyncRequest(int method, String url,
+			final Map<String, String> paramMap, final UICallBack mCallBack) {
+		StringRequest request = new StringRequest(method, url,
+				new Response.Listener<String>() {
+					@Override
+					public void onResponse(String response) {
+
+						mCallBack.onSuccess(response);
+					}
+				}, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+
+						mCallBack.onFailure(error);
+					}
+				}) {
+			@Override
+			protected Map<String, String> getParams() throws AuthFailureError {
+				// TODO Auto-generated method stub
+				return paramMap;
+			}
+		};
+
+		request.setTag(mContext);
+		volleyQueue.add(request);
+
+	}
+}

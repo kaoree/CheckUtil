@@ -1,0 +1,85 @@
+package com.nationpowergrid.mobileoperation.utils;
+
+public class RequestUrls {
+	// "http://172.20.32.84:9887/GWKH/mobileOperation/rest/"
+	public static String baseUrl = "http://172.20.184.200:9000/GWKH/mobileOperation/rest/";
+
+	/** 登录url */
+	public static String loginUrl = baseUrl + "pmutualuser/loginVerify?";
+
+	/** 我的工作列表（检查单列表） */
+	public static String myWorkListUrl = baseUrl
+			+ "homePageInfo/checkListInfo?";
+
+	/** 一户一案列表查询 */
+	public static String oneCaseListUrl = baseUrl
+			+ "oneCaseInfo/retrieveClientInfo?";
+
+	/** 一户一案标题查询 */
+	public static String oneCaseTextTitleUrl = baseUrl
+			+ "oneCaseInfo/retrieveCaseTitle?";
+
+	/**
+	 * 一户一案内容查询
+	 */
+	public static String oneCaseTextContentUrl = baseUrl
+			+ "oneCaseInfo/retrieveCaseContent?";
+
+	/**
+	 * 我的消息列表查询
+	 */
+	public static String myMessageListUrlString = baseUrl
+			+ "homePageInfo/showNotice?";
+
+	/** 知识库列表查询 */
+	public static String knowledgeBaseListUrl = baseUrl
+			+ "homePageInfo/knowledgeInfo?";
+
+	/**
+	 * 一户一案附表物资列表查询 PLAN17~19
+	 */
+	public static String oneCaseMaterialUrl = baseUrl
+			+ "oneCaseInfo/retrieveMaterial?";
+
+	/** 一户一案附表应携带材料列表查询 */
+	public static String oneCaseCarryResUrl = baseUrl
+			+ "oneCaseInfo/retrieveCarryRes?";
+
+	/** 一户一案附表-供电公司应急保电人员联系方式 */
+	public static String oneCaseContactsUrl = baseUrl
+			+ "oneCaseInfo/retrieveContacts?";
+
+	/** 一户一案附表-客户电气负责人及停送电联系人名单 */
+	public static String oneCaseContactListUrl = baseUrl
+			+ "oneCaseInfo/retrieveContactList?";
+
+	/** 一户一案附表-主要抢险用电负荷明细表 */
+	public static String oneCaseDetailUrl = baseUrl
+			+ "oneCaseInfo/retrieveDetail?";
+
+	/** 数据更新地址 */
+	public static String updateCodeUrl = baseUrl
+			+ "refreshBParams/refreshCode?";
+
+	/** 本地数据上传服务器地址 */
+	public static String uploadDataUrl = baseUrl + "myWorkInfo/changeChkInfo";
+
+	/** 客户信息核对地址 */
+	public static String myworkClientInfoVerify = baseUrl
+			+ "myWorkInfo/clientInfoVerify";
+
+	/** 隐患信息查询 */
+	public static String myworkDangerInfo = baseUrl + "myWorkInfo/dangerInfo";
+
+	/** 测试 */
+	public static String testUrl = baseUrl + "homePageInfo/testInfo?";
+
+	/** 客户坐标查询地址 */
+	public static String customerPointGetUrl = baseUrl
+			+ "myWorkInfo/findGisCode";
+
+	/** 一户一案所有信息地址 */
+	public static String oneCaseAllInfoUrl = baseUrl
+			+ "oneCaseInfo/retrieveAllDetail";
+
+}

@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/GWKH/!svn/ver/9993/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils
+END
+PreferenceUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/GWKH/!svn/ver/3830/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/PreferenceUtils.java
+END
+ValidateMsg.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/GWKH/!svn/ver/6687/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/ValidateMsg.java
+END
+Utils.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/GWKH/!svn/ver/5609/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/Utils.java
+END
+DownLoadManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/GWKH/!svn/ver/6567/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/DownLoadManager.java
+END
+NetWatcher.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/GWKH/!svn/ver/8530/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/NetWatcher.java
+END
+UpdataInfoParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/GWKH/!svn/ver/9763/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/UpdataInfoParser.java
+END
+Test.java
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/GWKH/!svn/ver/4918/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/Test.java
+END
+MyStringRequest.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/GWKH/!svn/ver/5042/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/MyStringRequest.java
+END
+PGExecutor.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/GWKH/!svn/ver/5792/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/PGExecutor.java
+END
+InitBaiduMapApplication.java
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/svn/GWKH/!svn/ver/3368/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/InitBaiduMapApplication.java
+END
+VolleyUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/GWKH/!svn/ver/9337/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/VolleyUtils.java
+END
+InjectUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/GWKH/!svn/ver/9763/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/InjectUtils.java
+END
+CheckUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/GWKH/!svn/ver/7539/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/CheckUtils.java
+END
+HttpExecutor.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/GWKH/!svn/ver/4918/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/HttpExecutor.java
+END
+RequestUrls.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/GWKH/!svn/ver/9993/trunk/APP/MobileOperation/Android/MobileOperation/src/com/nationpowergrid/mobileoperation/utils/RequestUrls.java
+END

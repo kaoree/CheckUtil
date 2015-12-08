@@ -1,0 +1,71 @@
+package com.nationpowergrid.mobileoperation.utils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.v4.app.Fragment;
+
+import com.nationpowergrid.mobileoperation.interfaces.INetStateListener;
+
+public class NetWatcher {
+	public static Context context;
+	public static List<INetStateListener> listeners = new ArrayList<INetStateListener>();
+
+	public static void init(INetStateListener listener) {
+		// if(listener instanceof Context){
+		// context=(Context) listener;
+		// }
+		context = getContext(listener);
+		if (context != null) {
+			if (listeners != null) {
+				listeners.add(listener);
+				refreash(listener);
+			}
+		}
+	}
+
+	public static void refreash(INetStateListener l) {
+		if (validateInternet()) {
+			l.isActive();
+			return;
+		}
+		l.isClose();
+	}
+
+	public static void unWatch(INetStateListener l) {
+		if (listeners.contains(l)) {
+			listeners.remove(l);
+		}
+	}
+
+	public static Context getContext(INetStateListener listener) {
+		if (listener instanceof Context) {
+			return (Context) listener;
+		} else if (listener instanceof Fragment) {
+			return ((Fragment) listener).getActivity();
+		}
+		return null;
+	}
+
+	public static boolean validateInternet() {
+		ConnectivityManager manager = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (manager == null) {
+			return false;
+		} else {
+			NetworkInfo[] info = manager.getAllNetworkInfo();
+			if (info != null) {
+				for (int i = 0; i < info.length; i++) {
+					if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+}
